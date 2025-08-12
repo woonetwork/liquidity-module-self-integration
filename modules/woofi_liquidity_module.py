@@ -131,13 +131,13 @@ class WOOFiPoolMath:
         if quote_token_amount_after_fee > base_token_max_notional_swap:
             return None
         
-        gamma = quote_token_amount_after_fee * base_token_coeff / (10 ** fixed_parameters["quote_token_decimals"])
+        gamma = quote_token_amount_after_fee * base_token_coeff // (10 ** fixed_parameters["quote_token_decimals"])
         if gamma > base_token_max_gamma:
             return None
         
         baes_amount = int(((
-            (quote_token_amount_after_fee * (10 ** base_token_decimals) * (10 ** fixed_parameters["oracle_price_decimals"])) / base_token_price
-        ) * (1e18 - gamma - base_token_spread)) / 1e18 / (10 ** fixed_parameters["quote_token_decimals"]))
+            (quote_token_amount_after_fee * (10 ** base_token_decimals) * (10 ** fixed_parameters["oracle_price_decimals"])) // base_token_price
+        ) * (1e18 - gamma - base_token_spread)) // 1e18 // (10 ** fixed_parameters["quote_token_decimals"]))
 
         return baes_amount
     
@@ -163,14 +163,14 @@ class WOOFiPoolMath:
         if notional_swap > base_token_max_notional_swap:
             return None
         
-        gamma = (base_token_amount * base_token_price * base_token_coeff) / (10 ** fixed_parameters["oracle_price_decimals"]) / (10 ** base_token_decimals)
+        gamma = (base_token_amount * base_token_price * base_token_coeff) // (10 ** fixed_parameters["oracle_price_decimals"]) // (10 ** base_token_decimals)
         if gamma > base_token_max_gamma:
             return None
         
         quote_token_amount = int(
             (
-                (base_token_amount * base_token_price * (10 ** fixed_parameters["quote_token_decimals"])) / (10 ** fixed_parameters["oracle_price_decimals"]) * (1e18 - gamma - base_token_spread)
-            ) / 1e18 / (10 ** base_token_decimals)
+                (base_token_amount * base_token_price * (10 ** fixed_parameters["quote_token_decimals"])) // (10 ** fixed_parameters["oracle_price_decimals"]) * (1e18 - gamma - base_token_spread)
+            ) // 1e18 // (10 ** base_token_decimals)
         )
 
         return quote_token_amount
@@ -300,18 +300,18 @@ class WOOFiPoolMath:
         pd = 10 ** fixed_parameters["oracle_price_decimals"]
         bd = 10 ** base_token_decimals
         
-        a = 1e36 * bd * pd * base_token_coeff / base_token_price / 1e18 / (qd ** 2)
-        b = 1e36 * bd * pd * (base_token_spread - 1e18) / base_token_price / qd / 1e18
+        a = 1e36 * bd * pd * base_token_coeff // base_token_price // 1e18 // (qd ** 2)
+        b = 1e36 * bd * pd * (base_token_spread - 1e18) // base_token_price // qd // 1e18
         c = 1e36 * base_token_amount
 
         delta = b ** 2 - 4 * a * c
         if delta < 0:
             return None
         
-        x1 = (-1 * b + math.sqrt(delta)) / (2 * a)
-        x2 = (-1 * b - math.sqrt(delta)) / (2 * a)
+        x1 = (-1 * b + math.sqrt(delta)) // (2 * a)
+        x2 = (-1 * b - math.sqrt(delta)) // (2 * a)
 
-        notional_value_with_qd = base_token_price * base_token_amount * qd / pd / bd
+        notional_value_with_qd = base_token_price * base_token_amount * qd // pd // bd
         if abs(x1 - notional_value_with_qd) < abs(x2 - notional_value_with_qd):
             quote_token_amount_after_fee = int(x1)
         else:
@@ -323,7 +323,7 @@ class WOOFiPoolMath:
         if quote_token_amount_after_fee > base_token_max_notional_swap:
             return None
         
-        gamma = quote_token_amount_after_fee * base_token_coeff / qd
+        gamma = quote_token_amount_after_fee * base_token_coeff // qd
         if gamma > base_token_max_gamma:
             return None
         
@@ -351,19 +351,19 @@ class WOOFiPoolMath:
         pd = 10 ** fixed_parameters["oracle_price_decimals"]
         bd = 10 ** base_token_decimals
 
-        a = 1e36 * (base_token_price ** 2) * qd * base_token_coeff / (pd ** 2) / bd
-        b = 1e36 * base_token_price * qd * (base_token_spread - 1e18) / pd
+        a = 1e36 * (base_token_price ** 2) * qd * base_token_coeff // (pd ** 2) // bd
+        b = 1e36 * base_token_price * qd * (base_token_spread - 1e18) // pd
         c = 1e36 * quote_token_amount * 1e18 * bd
 
         delta = b ** 2 - 4 * a * c
         if delta < 0:
             return None
         
-        x1 = (-1 * b + math.sqrt(delta)) / (2 * a)
-        x2 = (-1 * b - math.sqrt(delta)) / (2 * a)
+        x1 = (-1 * b + math.sqrt(delta)) // (2 * a)
+        x2 = (-1 * b - math.sqrt(delta)) // (2 * a)
 
-        notional_value_with_qd1 = base_token_price * x1 * qd / pd / bd
-        notional_value_with_qd2 = base_token_price * x2 * qd / pd / bd
+        notional_value_with_qd1 = base_token_price * x1 * qd // pd // bd
+        notional_value_with_qd2 = base_token_price * x2 * qd // pd // bd
 
         if abs(notional_value_with_qd1 - quote_token_amount) < abs(notional_value_with_qd2 - quote_token_amount):
             base_token_amount = int(x1)
@@ -373,11 +373,11 @@ class WOOFiPoolMath:
         if base_token_amount < 0:
             return None
         
-        notional_swap = base_token_amount * base_token_price * qd / bd / pd
+        notional_swap = base_token_amount * base_token_price * qd // bd // pd
         if notional_swap > base_token_max_notional_swap:
             return None
         
-        gamma = base_token_amount * base_token_price * base_token_coeff / pd / bd
+        gamma = base_token_amount * base_token_price * base_token_coeff // pd // bd
         if gamma > base_token_max_gamma:
             return None
         
