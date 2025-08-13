@@ -13,7 +13,6 @@ class TestWOOFiLiquidityModule(unittest.TestCase):
         self.input_token = Token(address="0x4200000000000000000000000000000000000006", decimals=18, symbol="WETH", reference_price=Decimal(1_750))
         self.output_token = Token(address="0xcbB7C0000aB88B473b1f5aFd9ef808440eed33Bf", decimals=8, symbol="cbBTC", reference_price=Decimal(92_000))
         
-
         self.valid_pool_state = {
             "input_token_reserve": 100000000000000000000,
             "input_token_fee_rate": 25,
