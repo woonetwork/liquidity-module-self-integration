@@ -395,10 +395,10 @@ class WOOFiLiquidityModule(LiquidityModule):
     ) -> tuple[int | None, int | None]:
         # Implement logic to calculate output amount given input amount
         pool_math = WOOFiPoolMath()
-        if input_token == fixed_parameters["quote_token"]:
+        if input_token.address == fixed_parameters["quote_token"].address:
             return pool_math.sell_quote_token_out(pool_state, fixed_parameters, output_token, input_amount)
-        elif output_token == fixed_parameters["quote_token"]:
-            return pool_math.sell_base_token_out(pool_state, fixed_parameters, output_token, input_amount)
+        elif output_token.address == fixed_parameters["quote_token"].address:
+            return pool_math.sell_base_token_out(pool_state, fixed_parameters, input_token, input_amount)
         else:
             return pool_math.swap_base_to_base_out(pool_state, fixed_parameters, input_token, output_token, input_amount)
 
@@ -412,10 +412,10 @@ class WOOFiLiquidityModule(LiquidityModule):
     ) -> tuple[int | None, int | None]:
         # Implement logic to calculate required input amount given output amount
         pool_math = WOOFiPoolMath()
-        if input_token == fixed_parameters["quote_token"]:
+        if input_token.address == fixed_parameters["quote_token"].address:
             return pool_math.sell_quote_token_in(pool_state, fixed_parameters, output_token, output_amount)
-        elif output_token == fixed_parameters["quote_token"]:
-            return pool_math.sell_base_token_in(pool_state, fixed_parameters, output_token, output_amount)
+        elif output_token.address == fixed_parameters["quote_token"].address:
+            return pool_math.sell_base_token_in(pool_state, fixed_parameters, input_token, output_amount)
         else:
             return pool_math.swap_base_to_base_in(pool_state, fixed_parameters, input_token, output_token, output_amount)
 
